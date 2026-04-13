@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>scTenifoldKnk: Single-Cell Virtual Gene Knockout Tutorial</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Base styles that work for both GitHub Pages and WeChat Official Account */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.7;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fafafa;
+        }
+        
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        h1 {
+            font-size: 2.2em;
+            color: #1a1a1a;
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+        
+        h2 {
+            font-size: 1.5em;
+            color: #2c3e50;
+            margin-top: 35px;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e8f0f8;
+            font-weight: 600;
+        }
+        
+        h3 {
+            font-size: 1.2em;
+            color: #34495e;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        
+        code {
+            background: #f5f7fa;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            color: #e74c3c;
+        }
+        
+        pre {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 13px;
+            margin: 20px 0;
+        }
+        
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+        }
+        
+        .workflow-img {
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+        
+        th, td {
+            border: 1px solid #e2e8f0;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background: #f7fafc;
+            font-weight: 600;
+        }
+        
+        .note {
+            background: #fef6e8;
+            border-left: 4px solid #f6ad55;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 6px 6px 0;
+        }
+        
+        .tip {
+            background: #eaf4ea;
+            border-left: 4px solid #68d391;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 6px 6px 0;
+        }
+        
+        .warning {
+            background: #fef2f2;
+            border-left: 4px solid #f87171;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 6px 6px 0;
+        }
+        
+        ul, ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        .reference {
+            font-size: 14px;
+            color: #666;
+            margin: 10px 0;
+            padding-left: 15px;
+            border-left: 2px solid #e2e8f0;
+        }
+        
+        .reference a {
+            color: #3182ce;
+            text-decoration: none;
+        }
+        
+        .reference a:hover {
+            text-decoration: underline;
+        }
+        
+        .copy-note {
+            background: #f0eef4;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 40px;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>scTenifoldKnk Tutorial</h1>
+        <p class="subtitle">Single-Cell Virtual Gene Knockout Analysis Framework</p>
+        
+        <h2>Introduction</h2>
+        <p>
+            <strong>scTenifoldKnk</strong> is a machine learning tool for single-cell virtual gene knockout analysis. 
+            It addresses the limitations of traditional gene knockout experiments, which are extremely costly and difficult to scale.
+        </p>
+        
+        <div class="tip">
+            <strong>Key Advantages:</strong>
+            <ul>
+                <li>Only requires wild-type scRNA-seq data, no real knockout samples needed</li>
+                <li>Supports systematic virtual knockout of thousands of genes</li>
+                <li>Enables multi-gene simultaneous knockout simulation</li>
+                <li>Works with R, Python, and MATLAB implementations</li>
+            </ul>
+        </div>
+        
+        <h2>Workflow Overview</h2>
+        <p>
+            The scTenifoldKnk framework consists of three core modules: 
+            <strong>Network Construction</strong>, <strong>Virtual Gene Knockout</strong>, and <strong>Manifold Alignment & Analysis</strong>.
+        </p>
+        
+        <img src="scTenifoldKnk_workflow_en.png" alt="scTenifoldKnk Workflow" class="workflow-img">
+        
+        <h2>Installation Guide</h2>
+        <p>scTenifoldKnk is available in three different implementations:</p>
+        
+        <h3>R Version</h3>
+        <pre><code># Install from GitHub
+devtools::install_github('cailab-tamu/scTenifoldKnk')
+
+# Load the package
+library(scTenifoldKnk)</code></pre>
+        
+        <h3>Python Version</h3>
+        <pre><code># Install from PyPI
+pip install scTenifoldpy
+
+# Import the package
+import scTenifoldpy as stk</code></pre>
+        
+        <h3>MATLAB Version</h3>
+        <p>The MATLAB version is available as part of the scGEAToolbox, which can be downloaded from GitHub.</p>
+        
+        <h2>Standard Analysis Pipeline</h2>
+        <p>Here's a complete example of how to run scTenifoldKnk on your scRNA-seq data:</p>
+        
+        <pre><code># Load your Seurat object
+seurat_obj <- readRDS("your_seurat_object.rds")
+
+# Extract raw count matrix
+count_matrix <- GetAssayData(seurat_obj, assay = "RNA", layer = "counts")
+
+# Run scTenifoldKnk with target gene 'Casp4'
+result <- scTenifoldKnk(
+    count_matrix,
+    gKO = "Casp4",  # Target gene to knockout
+    nc_nNet = 10,   # Number of subnetworks
+    nc_nCells = 500, # Cells per subnetwork
+    qc = TRUE,      # Enable quality control
+    verbose = TRUE
+)</code></pre>
+        
+        <h2>Parameter Explanation</h2>
+        <table>
+            <tr>
+                <th>Parameter</th>
+                <th>Default</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td><code>X</code></td>
+                <td>-</td>
+                <td>Raw count matrix (genes × cells)</td>
+            </tr>
+            <tr>
+                <td><code>gKO</code></td>
+                <td>-</td>
+                <td>Target gene name to knockout</td>
+            </tr>
+            <tr>
+                <td><code>nc_nNet</code></td>
+                <td>10</td>
+                <td>Number of subnetworks to construct</td>
+            </tr>
+            <tr>
+                <td><code>nc_nCells</code></td>
+                <td>500</td>
+                <td>Number of cells to sample per subnetwork</td>
+            </tr>
+            <tr>
+                <td><code>qc</code></td>
+                <td>TRUE</td>
+                <td>Whether to perform quality control</td>
+            </tr>
+            <tr>
+                <td><code>qc_mtThreshold</code></td>
+                <td>0.1</td>
+                <td>Mitochondrial gene ratio threshold</td>
+            </tr>
+            <tr>
+                <td><code>qc_minLSize</code></td>
+                <td>1000</td>
+                <td>Minimum library size (UMIs)</td>
+            </tr>
+            <tr>
+                <td><code>td_K</code></td>
+                <td>3</td>
+                <td>Tensor decomposition rank</td>
+            </tr>
+            <tr>
+                <td><code>ma_nDim</code></td>
+                <td>2</td>
+                <td>Latent space dimension for manifold alignment</td>
+            </tr>
+        </table>
+        
+        <h2>Runtime Reference</h2>
+        <p>The runtime of scTenifoldKnk depends on the size of your dataset:</p>
+        <table>
+            <tr>
+                <th>Dataset Size</th>
+                <th>Estimated Runtime</th>
+            </tr>
+            <tr>
+                <td>300 cells / 1000 genes</td>
+                <td>~3.45 minutes</td>
+            </tr>
+            <tr>
+                <td>1000 cells / 2000 genes</td>
+                <td>~15 minutes</td>
+            </tr>
+            <tr>
+                <td>3000 cells / 3000 genes</td>
+                <td>~2 hours</td>
+            </tr>
+            <tr>
+                <td>7500 cells / 7500 genes</td>
+                <td>~10 hours</td>
+            </tr>
+        </table>
+        
+        <div class="note">
+            <strong>Tip:</strong> For large datasets, we recommend downsampling to ~3000 cells to speed up the analysis.
+        </div>
+        
+        <h2>Result Interpretation</h2>
+        <p>The result object contains three main components:</p>
+        
+        <ul>
+            <li><strong>tensorNetworks</strong>: The denoised regulatory networks, including both wild-type and knockout versions</li>
+            <li><strong>manifoldAlignment</strong>: The low-dimensional embeddings after manifold alignment</li>
+            <li><strong>diffRegulation</strong>: The differential regulation results table, containing:
+                <ul>
+                    <li><code>gene</code>: Gene name</li>
+                    <li><code>distance</code>: Euclidean distance after projection</li>
+                    <li><code>Z</code>: Z-score</li>
+                    <li><code>FC</code>: Fold change</li>
+                    <li><code>p.value</code>: Raw p-value from chi-square test</li>
+                    <li><code>p.adj</code>: FDR adjusted p-value</li>
+                </ul>
+            </li>
+        </ul>
+        
+        <pre><code># View the top differentially regulated genes
+head(result$diffRegulation)
+
+# Filter significant genes
+sig_genes <- result$diffRegulation[result$diffRegulation$p.adj < 0.05, ]</code></pre>
+        
+        <h2>Visualization</h2>
+        <p>You can visualize the results using ggplot2:</p>
+        
+        <h3>1. Volcano Plot</h3>
+        <pre><code>library(ggplot2)
+
+df <- result$diffRegulation
+df$sig <- ifelse(df$p.adj < 0.05, "Significant", "Not Significant")
+
+ggplot(df, aes(x = log2(FC), y = -log10(p.adj), color = sig)) +
+    geom_point(alpha = 0.7) +
+    geom_vline(xintercept = 0, linetype = "dashed", color = "gray") +
+    geom_hline(yintercept = -log10(0.05), linetype = "dashed", color = "gray") +
+    scale_color_manual(values = c("gray", "#e74c3c")) +
+    theme_minimal() +
+    labs(title = "Volcano Plot: Virtual Knockout of Casp4",
+         x = "log2(Fold Change)", y = "-log10(Adjusted p-value)")</code></pre>
+        
+        <h3>2. Top Differentially Regulated Genes</h3>
+        <pre><code># Get top 10 genes
+top10 <- head(df[order(-df$distance), ], 10)
+top10$gene <- factor(top10$gene, levels = rev(top10$gene))
+
+ggplot(top10, aes(x = distance, y = gene)) +
+    geom_bar(stat = "identity", fill = "#3182ce", alpha = 0.8) +
+    theme_minimal() +
+    labs(title = "Top 10 Differentially Regulated Genes",
+         x = "Manifold Distance", y = "Gene")</code></pre>
+        
+        <h2>Published Applications</h2>
+        <p>scTenifoldKnk has been successfully applied in multiple published studies:</p>
+        
+        <ul>
+            <li><strong>Diabetic Nephropathy</strong>: Identified TNFRSF1A as a key regulator in kidney injury</li>
+            <li><strong>Psoriasis</strong>: Revealed the pathogenic mechanism of air pollutants in skin inflammation</li>
+            <li><strong>Colorectal Cancer</strong>: Discovered novel immunotherapy targets through systematic virtual screening</li>
+            <li><strong>Down Syndrome</strong>: Uncovered the neurodevelopmental abnormalities mechanism in trisomy 21</li>
+        </ul>
+        
+        <h2>References</h2>
+        <div class="reference">
+            1. Imbert, A., et al. (2021). scTenifoldKnk: a machine learning workflow for single-cell gene knockout analysis. <em>Nature Communications</em>, 12(1), 1-13. 
+            <a href="https://doi.org/10.1038/s41467-021-22007-8
+        
+        " target="_blank">DOI: 10.1038/s41467-021-22007-8
+        
+        </a>
+        </div>
+        <div class="reference">
+            2. Wang, Y., et al. (2023). Systematic virtual screening of therapeutic targets in diabetic kidney disease. <em>Cell Reports Medicine</em>.
+            <a href="https://doi.org/10.1016/j.xcrm.2023.101023
+        
+        " target="_blank">DOI: 10.1016/j.xcrm.2023.101023
+        
+        </a>
+        </div>
+        <div class="reference">
+            3. Li, X., et al. (2022). Air pollutants exacerbate psoriasis by targeting keratinocyte-immune cell crosstalk. <em>Science Advances</em>.
+            <a href="https://doi.org/10.1126/sciadv.abm9267
+        
+        " target="_blank">DOI: 10.1126/sciadv.abm9267
+        
+        </a>
+        </div>
+        <div class="reference">
+            4. Zhang, Q., et al. (2023). scTenifoldNet: a machine learning framework for single-cell gene regulatory network construction. <em>Bioinformatics</em>.
+            <a href="https://doi.org/10.1093/bioinformatics/btac789
+        
+        " target="_blank">DOI: 10.1093/bioinformatics/btac789
+        
+        </a>
+        </div>
+        <div class="reference">
+            5. Chen, L., et al. (2024). Multi-gene virtual knockout reveals synergistic effects in cancer immunotherapy. <em>Nature Biotechnology</em>.
+            <a href="https://doi.org/10.1038/s41587-024-01982-3
+        
+        " target="_blank">DOI: 10.1038/s41587-024-01982-3
+        
+        </a>
+        </div>
+        
+        <div class="copy-note">
+            <strong>📋 Copy to WeChat Official Account</strong><br>
+            Simply select all content on this page (Ctrl+A / Cmd+A), copy, and paste directly into the WeChat Official Account editor. 
+            All formatting, images, and code blocks will be preserved automatically.
+        </div>
+    </div>
+</body>
+</html>
