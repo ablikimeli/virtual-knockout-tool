@@ -213,7 +213,160 @@
             <strong>Network Construction</strong>, <strong>Virtual Gene Knockout</strong>, and <strong>Manifold Alignment & Analysis</strong>.
         </p>
         
-        <img src="scTenifoldKnk_workflow_en.png" alt="scTenifoldKnk Workflow" class="workflow-img">
+        <!-- INLINE SVG WORKFLOW DIAGRAM - NO EXTERNAL FILES NEEDED -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1350 1320" font-family="'Inter', 'Arial', sans-serif" font-size="13" fill="#2d2d2d" class="workflow-img">
+          <rect width="1350" height="1320" fill="#ffffff" />
+          <!-- ================= Title Section ================= -->
+          <text x="675" y="35" text-anchor="middle" font-size="24" font-weight="bold" fill="#1a1a1a">scTenifoldKnk: Single-Cell Virtual Gene Knockout Analysis Framework</text>
+          <text x="675" y="58" text-anchor="middle" font-size="14" fill="#666">Machine Learning Workflow for Gene Function Prediction via Single-Cell Regulatory Network Perturbation (R/Python/MATLAB)</text>
+          <!-- ================= Background & Motivation ================= -->
+          <rect x="40" y="80" width="1270" height="130" rx="12" fill="#f0eef4" stroke="#b0a0c8" stroke-width="1.5" />
+          <text x="675" y="105" text-anchor="middle" font-size="16" font-weight="bold" fill="#5a4a7a">Background &amp; Motivation</text>
+          <!-- Left: Limitations of Traditional Experiments -->
+          <rect x="60" y="120" width="580" height="75" rx="6" fill="#fef6e8" stroke="#e0c8a0" stroke-width="1" />
+          <text x="80" y="142" font-size="13" font-weight="bold" fill="#8a6e3a">Limitations of Traditional Gene Knockout (KO) Experiments</text>
+          <text x="80" y="162" font-size="12" fill="#555">• Systematic knockout of thousands of genes is extremely costly, limited by experimental and animal resources</text>
+          <text x="80" y="180" font-size="12" fill="#555">• CRISPR library construction presents technical challenges, hard to scale massively</text>
+          <!-- Right: scTenifoldKnk Solution -->
+          <rect x="660" y="120" width="630" height="75" rx="6" fill="#eaf4ea" stroke="#8fb08f" stroke-width="1" />
+          <text x="680" y="142" font-size="13" font-weight="bold" fill="#2a5a2a">scTenifoldKnk Solution</text>
+          <text x="680" y="162" font-size="12" fill="#555">• Only requires wild-type (WT) scRNA-seq data, no real KO samples needed</text>
+          <text x="680" y="180" font-size="12" fill="#555">• Computationally efficient, supports systematic virtual KO and multi-gene simultaneous knockout</text>
+          <!-- Arrow from background to input -->
+          <line x1="675" y1="210" x2="675" y2="240" stroke="#b0a0c8" stroke-width="2" marker-end="url(#arrowPurple)" />
+          <!-- ================= Input Section ================= -->
+          <rect x="40" y="250" width="600" height="80" rx="10" fill="#e8f0f8" stroke="#7a9cbb" stroke-width="1.5" />
+          <text x="65" y="275" font-size="14" font-weight="bold" fill="#2d5a7a">Input Data</text>
+          <text x="65" y="298" font-size="13" fill="#333">Raw UMI Count Matrix</text>
+          <text x="65" y="318" font-size="12" fill="#555">Rows = Genes, Columns = Cells | Raw counts recommended instead of normalized data</text>
+          <rect x="660" y="250" width="300" height="80" rx="10" fill="#fef6e8" stroke="#e0c8a0" stroke-width="1.5" />
+          <text x="685" y="275" font-size="14" font-weight="bold" fill="#8a6e3a">Target Gene</text>
+          <text x="685" y="298" font-size="13" fill="#333">gKO = 'Casp4' (Example)</text>
+          <text x="685" y="318" font-size="12" fill="#555">Target gene to be virtually knocked out</text>
+          <!-- Arrows from input to workflow -->
+          <line x1="340" y1="330" x2="340" y2="370" stroke="#7a9cbb" stroke-width="2" marker-end="url(#arrowBlue)" />
+          <line x1="810" y1="330" x2="810" y2="370" stroke="#c0a060" stroke-width="2" marker-end="url(#arrowOrange)" />
+          <!-- ================= Core Workflow Modules ================= -->
+          <!-- Module 1: Network Construction -->
+          <rect x="40" y="380" width="400" height="500" rx="12" fill="#f0f4f8" stroke="#c0d0e0" stroke-width="1.5" />
+          <text x="240" y="410" text-anchor="middle" font-size="16" font-weight="bold" fill="#2c3e66">Module 1: scGRN Construction</text>
+          <!-- Step 1.1 -->
+          <rect x="60" y="430" width="360" height="65" rx="6" fill="#ffffff" stroke="#a0b8d0" stroke-width="1" stroke-dasharray="4,2" />
+          <text x="75" y="450" font-size="12" fill="#4a6a85">1.1</text>
+          <text x="95" y="450" font-size="12" font-weight="bold" fill="#2c3e66">Cell Subsampling</text>
+          <text x="75" y="468" font-size="11" fill="#555">m-out-of-n bootstrap, repeat t times (default t = nc_nNet = 10)</text>
+          <text x="75" y="483" font-size="11" fill="#555">Randomly sample nc_nCells = 500 cells per subnetwork</text>
+          <line x1="240" y1="495" x2="240" y2="520" stroke="#a0b8d0" stroke-width="1.5" marker-end="url(#arrowBlue)" />
+          <!-- Step 1.2 -->
+          <rect x="60" y="525" width="360" height="65" rx="6" fill="#ffffff" stroke="#a0b8d0" stroke-width="1" stroke-dasharray="4,2" />
+          <text x="75" y="545" font-size="12" fill="#4a6a85">1.2</text>
+          <text x="95" y="545" font-size="12" font-weight="bold" fill="#2c3e66">Principal Component Regression</text>
+          <text x="75" y="563" font-size="11" fill="#555">Run p regressions per subset (p = number of genes)</text>
+          <text x="75" y="578" font-size="11" fill="#555">Obtain t adjacency matrices A_i (p x p)</text>
+          <line x1="240" y1="590" x2="240" y2="615" stroke="#a0b8d0" stroke-width="1.5" marker-end="url(#arrowBlue)" />
+          <!-- Step 1.3 -->
+          <rect x="60" y="620" width="360" height="85" rx="6" fill="#ffffff" stroke="#a0b8d0" stroke-width="1" stroke-dasharray="4,2" />
+          <text x="75" y="640" font-size="12" fill="#4a6a85">1.3</text>
+          <text x="95" y="640" font-size="12" font-weight="bold" fill="#2c3e66">Tensor Decomposition &amp; Denoising</text>
+          <text x="75" y="660" font-size="11" fill="#555">Combine {A_i} into 3rd-order tensor X (p x p x t)</text>
+          <text x="75" y="676" font-size="11" fill="#555">CP Decomposition - take top td_K components (default td_K = 3)</text>
+          <text x="75" y="692" font-size="11" fill="#555">Reconstruct &amp; average - Final WT network A_WT</text>
+          <line x1="240" y1="705" x2="240" y2="735" stroke="#a0b8d0" stroke-width="1.5" marker-end="url(#arrowBlue)" />
+          <!-- Module 1 Output -->
+          <rect x="80" y="740" width="320" height="60" rx="6" fill="#d9e8db" stroke="#6f9e7a" stroke-width="1.2" />
+          <text x="100" y="762" font-size="12" fill="#2d5a3a">Output: Wild-Type scGRN (A_WT)</text>
+          <text x="100" y="782" font-size="11" fill="#3a6a4a">Weighted directed adjacency matrix representing regulatory relationships</text>
+          <!-- Module 2: Virtual Knockout -->
+          <rect x="475" y="380" width="400" height="500" rx="12" fill="#fef6e8" stroke="#e0c8a0" stroke-width="1.5" />
+          <text x="675" y="410" text-anchor="middle" font-size="16" font-weight="bold" fill="#8a6e3a">Module 2: Virtual Gene Knockout</text>
+          <rect x="500" y="440" width="350" height="55" rx="6" fill="#ffffff" stroke="#d0b880" stroke-width="1" />
+          <text x="520" y="465" font-size="12" fill="#8a6e3a">Duplicate Adjacency Matrix</text>
+          <text x="520" y="482" font-size="12" fill="#555">A_WT - A_KO</text>
+          <line x1="675" y1="495" x2="675" y2="530" stroke="#d0b880" stroke-width="1.5" marker-end="url(#arrowOrange)" />
+          <rect x="500" y="535" width="350" height="75" rx="6" fill="#ffffff" stroke="#d0b880" stroke-width="1" />
+          <text x="520" y="557" font-size="12" fill="#8a6e3a">Knockout Operation</text>
+          <text x="520" y="575" font-size="12" fill="#555">Set the entire row of target gene (gKO) in A_KO to zero</text>
+          <text x="520" y="593" font-size="12" fill="#555">Remove all outgoing regulatory edges of the target gene</text>
+          <circle cx="810" cy="570" r="8" fill="#f0d8b0" stroke="#c0a060" stroke-width="1" />
+          <text x="810" y="574" text-anchor="middle" font-size="9" fill="#8a6e3a">gKO</text>
+          <line x1="803" y1="564" x2="817" y2="576" stroke="#c0a060" stroke-width="1.5" />
+          <line x1="675" y1="610" x2="675" y2="645" stroke="#d0b880" stroke-width="1.5" marker-end="url(#arrowOrange)" />
+          <rect x="520" y="650" width="310" height="60" rx="6" fill="#f5e6ce" stroke="#c0a060" stroke-width="1.2" />
+          <text x="540" y="672" font-size="12" fill="#8a6e3a">Output: Pseudo-KO scGRN (A_KO)</text>
+          <text x="540" y="692" font-size="11" fill="#6b4e20">Preserves all genes, but target gene has no outgoing edges</text>
+          <!-- Module 3: Manifold Alignment -->
+          <rect x="910" y="380" width="400" height="500" rx="12" fill="#f0eef4" stroke="#b0a0c8" stroke-width="1.5" />
+          <text x="1110" y="410" text-anchor="middle" font-size="16" font-weight="bold" fill="#5a4a7a">Module 3: Manifold Alignment &amp; Analysis</text>
+          <rect x="930" y="440" width="360" height="60" rx="6" fill="#ffffff" stroke="#b0a0c8" stroke-width="1" />
+          <text x="950" y="462" font-size="12" fill="#5a4a7a">Manifold Alignment</text>
+          <text x="950" y="480" font-size="12" fill="#555">Project A_WT &amp; A_KO into shared k-dimensional latent space (k = ma_nDim = 2)</text>
+          <line x1="1110" y1="500" x2="1110" y2="535" stroke="#b0a0c8" stroke-width="1.5" marker-end="url(#arrowPurple)" />
+          <rect x="930" y="540" width="360" height="55" rx="6" fill="#ffffff" stroke="#b0a0c8" stroke-width="1" />
+          <text x="950" y="560" font-size="12" fill="#5a4a7a">Distance Calculation</text>
+          <text x="950" y="578" font-size="12" fill="#555">Euclidean distance: d_i = ||proj_WT(i) - proj_KO(i)||_2</text>
+          <line x1="1110" y1="595" x2="1110" y2="630" stroke="#b0a0c8" stroke-width="1.5" marker-end="url(#arrowPurple)" />
+          <rect x="930" y="635" width="360" height="55" rx="6" fill="#ffffff" stroke="#b0a0c8" stroke-width="1" />
+          <text x="950" y="655" font-size="12" fill="#5a4a7a">Significance Testing</text>
+          <text x="950" y="673" font-size="12" fill="#555">Chi-square test - p.value, FDR correction (p.adj)</text>
+          <line x1="1110" y1="690" x2="1110" y2="725" stroke="#b0a0c8" stroke-width="1.5" marker-end="url(#arrowPurple)" />
+          <rect x="930" y="730" width="360" height="55" rx="6" fill="#d9e0e8" stroke="#7a6a9a" stroke-width="1.2" />
+          <text x="950" y="752" font-size="12" fill="#4a3a6a">Output: Differential Regulation Results</text>
+          <text x="950" y="770" font-size="11" fill="#4a3a6a">gene, distance, Z, FC, p.value, p.adj</text>
+          <!-- Cross-module arrows -->
+          <line x1="440" y1="630" x2="475" y2="630" stroke="#c0d0e0" stroke-width="2" marker-end="url(#arrowGray)" />
+          <line x1="875" y1="680" x2="910" y2="680" stroke="#d0c0a0" stroke-width="2" marker-end="url(#arrowGray)" />
+          <!-- ================= Parameters Section ================= -->
+          <rect x="40" y="910" width="1270" height="100" rx="10" fill="#f8f8f8" stroke="#ccc" stroke-width="1" stroke-dasharray="4,2" />
+          <text x="675" y="935" text-anchor="middle" font-size="14" font-weight="bold" fill="#555">Key Parameters</text>
+          <text x="70" y="960" font-size="12" fill="#444"><tspan font-weight="bold">Network Construction:</tspan></text>
+          <text x="70" y="978" font-size="11" fill="#555">nc_nNet = 10    Number of subnetworks</text>
+          <text x="70" y="994" font-size="11" fill="#555">nc_nCells = 500 Cells sampled per subnetwork</text>
+          <text x="480" y="960" font-size="12" fill="#444"><tspan font-weight="bold">Quality Control:</tspan></text>
+          <text x="480" y="978" font-size="11" fill="#555">qc_mtThreshold = 0.1  Mitochondrial gene ratio threshold</text>
+          <text x="480" y="994" font-size="11" fill="#555">qc_minLSize = 1000    Minimum library size (UMIs)</text>
+          <text x="900" y="960" font-size="12" fill="#444"><tspan font-weight="bold">Alignment &amp; Convergence:</tspan></text>
+          <text x="900" y="978" font-size="11" fill="#555">ma_nDim = 2       Latent space dimension</text>
+          <text x="900" y="994" font-size="11" fill="#555">td_K = 3          Tensor decomposition rank</text>
+          <!-- ================= Implementation & Installation ================= -->
+          <rect x="40" y="1030" width="1270" height="110" rx="10" fill="#eaf4ea" stroke="#8fb08f" stroke-width="1.5" />
+          <text x="675" y="1055" text-anchor="middle" font-size="15" font-weight="bold" fill="#2a5a2a">Implementation &amp; Installation</text>
+          <rect x="60" y="1070" width="380" height="50" rx="6" fill="#ffffff" stroke="#a0c0a0" stroke-width="1" />
+          <text x="75" y="1090" font-size="13" font-weight="bold" fill="#2d5a2d">R Version</text>
+          <text x="75" y="1108" font-size="11" fill="#555">install_github('cailab-tamu/scTenifoldKnk')</text>
+          <rect x="470" y="1070" width="380" height="50" rx="6" fill="#ffffff" stroke="#a0c0a0" stroke-width="1" />
+          <text x="485" y="1090" font-size="13" font-weight="bold" fill="#2d5a2d">Python Version</text>
+          <text x="485" y="1108" font-size="11" fill="#555">pip install scTenifoldpy</text>
+          <rect x="880" y="1070" width="410" height="50" rx="6" fill="#ffffff" stroke="#a0c0a0" stroke-width="1" />
+          <text x="895" y="1090" font-size="13" font-weight="bold" fill="#2d5a2d">MATLAB Version</text>
+          <text x="895" y="1108" font-size="11" fill="#555">scGEAToolbox (GitHub)</text>
+          <!-- ================= Results & Visualization ================= -->
+          <rect x="40" y="1160" width="1270" height="120" rx="10" fill="#fef4e8" stroke="#d0b880" stroke-width="1.5" />
+          <text x="675" y="1185" text-anchor="middle" font-size="15" font-weight="bold" fill="#8a6e3a">Results &amp; Visualization</text>
+          <rect x="60" y="1205" width="600" height="55" rx="6" fill="#ffffff" stroke="#d0b880" stroke-width="1" />
+          <text x="75" y="1225" font-size="13" font-weight="bold" fill="#8a6e3a">Output Object (result)</text>
+          <text x="75" y="1245" font-size="11" fill="#444">• diffRegulation: gene, distance, Z, FC, p.value, p.adj</text>
+          <rect x="690" y="1205" width="600" height="55" rx="6" fill="#ffffff" stroke="#d0b880" stroke-width="1" />
+          <text x="705" y="1225" font-size="13" font-weight="bold" fill="#8a6e3a">Visualization Examples (R/ggplot2)</text>
+          <text x="705" y="1245" font-size="11" fill="#444">• Volcano Plot: logFC vs -log10(p) | • Bar Plot: Top 10 Genes | • Regulatory Network</text>
+          <!-- Bottom Runtime Tip -->
+          <rect x="40" y="1300" width="1270" height="20" rx="4" fill="#f0f0f0" stroke="#ddd" stroke-width="1" />
+          <text x="675" y="1315" text-anchor="middle" font-size="11" fill="#888">Runtime Reference: 300 cells/1000 genes ~ 3.5 min; 7500 cells/7500 genes ~ 10 h (We recommend downsampling for large datasets)</text>
+          <!-- ================= Arrow Markers ================= -->
+          <defs>
+            <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+              <path d="M0,0 L10,5 L0,10 Z" fill="#7a9cbb" />
+            </marker>
+            <marker id="arrowOrange" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+              <path d="M0,0 L10,5 L0,10 Z" fill="#c0a060" />
+            </marker>
+            <marker id="arrowPurple" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+              <path d="M0,0 L10,5 L0,10 Z" fill="#b0a0c8" />
+            </marker>
+            <marker id="arrowGray" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+              <path d="M0,0 L10,5 L0,10 Z" fill="#a0a0a0" />
+            </marker>
+          </defs>
+        </svg>
         
         <h2>Installation Guide</h2>
         <p>scTenifoldKnk is available in three different implementations:</p>
@@ -403,50 +556,26 @@ ggplot(top10, aes(x = distance, y = gene)) +
         <h2>References</h2>
         <div class="reference">
             1. Imbert, A., et al. (2021). scTenifoldKnk: a machine learning workflow for single-cell gene knockout analysis. <em>Nature Communications</em>, 12(1), 1-13. 
-            <a href="https://doi.org/10.1038/s41467-021-22007-8
-        
-        " target="_blank">DOI: 10.1038/s41467-021-22007-8
-        
-        </a>
+            <a href="https://doi.org/10.1038/s41467-021-22007-8" target="_blank">DOI: 10.1038/s41467-021-22007-8</a>
         </div>
         <div class="reference">
             2. Wang, Y., et al. (2023). Systematic virtual screening of therapeutic targets in diabetic kidney disease. <em>Cell Reports Medicine</em>.
-            <a href="https://doi.org/10.1016/j.xcrm.2023.101023
-        
-        " target="_blank">DOI: 10.1016/j.xcrm.2023.101023
-        
-        </a>
+            <a href="https://doi.org/10.1016/j.xcrm.2023.101023" target="_blank">DOI: 10.1016/j.xcrm.2023.101023</a>
         </div>
         <div class="reference">
             3. Li, X., et al. (2022). Air pollutants exacerbate psoriasis by targeting keratinocyte-immune cell crosstalk. <em>Science Advances</em>.
-            <a href="https://doi.org/10.1126/sciadv.abm9267
-        
-        " target="_blank">DOI: 10.1126/sciadv.abm9267
-        
-        </a>
+            <a href="https://doi.org/10.1126/sciadv.abm9267" target="_blank">DOI: 10.1126/sciadv.abm9267</a>
         </div>
         <div class="reference">
             4. Zhang, Q., et al. (2023). scTenifoldNet: a machine learning framework for single-cell gene regulatory network construction. <em>Bioinformatics</em>.
-            <a href="https://doi.org/10.1093/bioinformatics/btac789
-        
-        " target="_blank">DOI: 10.1093/bioinformatics/btac789
-        
-        </a>
+            <a href="https://doi.org/10.1093/bioinformatics/btac789" target="_blank">DOI: 10.1093/bioinformatics/btac789</a>
         </div>
         <div class="reference">
             5. Chen, L., et al. (2024). Multi-gene virtual knockout reveals synergistic effects in cancer immunotherapy. <em>Nature Biotechnology</em>.
-            <a href="https://doi.org/10.1038/s41587-024-01982-3
-        
-        " target="_blank">DOI: 10.1038/s41587-024-01982-3
-        
-        </a>
+            <a href="https://doi.org/10.1038/s41587-024-01982-3" target="_blank">DOI: 10.1038/s41587-024-01982-3</a>
         </div>
         
-        <div class="copy-note">
-            <strong>📋 Copy to WeChat Official Account</strong><br>
-            Simply select all content on this page (Ctrl+A / Cmd+A), copy, and paste directly into the WeChat Official Account editor. 
-            All formatting, images, and code blocks will be preserved automatically.
-        </div>
+        <!-- REMOVED: WeChat copy note as requested for GitHub deployment -->
     </div>
 </body>
 </html>
